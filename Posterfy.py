@@ -1,4 +1,5 @@
 from PIL import Image
+import os
 
 def create_square_collage(image_paths, output_path):
     # Load images
@@ -11,27 +12,34 @@ def create_square_collage(image_paths, output_path):
     resized_images = [img.resize((min_dimension, min_dimension), Image.LANCZOS) for img in images]
 
     # Create a new square collage
-    collage_size = (min_dimension * 3, min_dimension * 3)  # 3x3 grid for a square collage
+    collage_size = (min_dimension * 6, min_dimension * 9)  # 3x3 grid for a square collage
     collage = Image.new('RGB', collage_size, (255, 255, 255))
 
     # Paste the images into the collage
-    for i, img in enumerate(resized_images):
-        x = (i % 3) * min_dimension
-        y = (i // 3) * min_dimension
-        collage.paste(img, (x, y))
+    img = 0
+    for row in range(6):
+        for col in range(9):
+            x = row * min_dimension
+            y = col * min_dimension
+            collage.paste(resized_images[img], (x, y))
+            img += 1
 
     # Save the final collage
     collage.save(output_path)
 
 
 # Example usage:
-image_path = [
-    "Pictures/IMG_8243.jpeg",
-    "Pictures/IMG_8244.jpeg",
-    "Pictures/IMG_8245.jpeg",
-    "Pictures/IMG_8246.jpeg",
-    "Pictures/IMG_8247.jpeg",
-    "Pictures/IMG_8248.jpeg"
-]
+
+img_paths = []
+# Directory you want to traverse
+directory = 'AlbumPoster'
+
+# Traverse through files in the directory
+for filename in os.listdir(directory):
+    file_path = os.path.join(directory, filename)
+    if os.path.isfile(file_path):  # Check if it's a file
+        img_paths.append(file_path)
+
+
 my_output_path = "collage.jpg"
-create_square_collage(image_path, my_output_path)
+create_square_collage(img_paths, my_output_path)
