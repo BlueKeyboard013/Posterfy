@@ -45,8 +45,19 @@ def callback():
         headers={'Authorization': f'Bearer {access_token}'}
     ).json()
 
-    print(top_songs['items'][1]['album']['images'])
-    print(len(top_songs['items']))
+
+    # print(top_songs['items'][1]['album']['images'])
+    # print(len(top_songs['items']))
+
+    song_images = []
+
+    for song in range(len(top_songs['items'])):
+        curr_song = top_songs['items'][song]
+        song_images.append(curr_song['album']['images'][0]['url'])
+
+    for url in song_images:
+        print(url)
+
 
     return f'Top songs: {top_songs}'
 
