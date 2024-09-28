@@ -3,6 +3,8 @@ from os import access
 import requests
 from flask import Flask, request, redirect
 import webbrowser
+import Posterfy
+
 
 app = Flask(__name__)
 
@@ -58,9 +60,17 @@ def callback():
     for url in song_images:
         print(url)
 
+    img_base64 = Posterfy.create_square_collage(song_images)
 
-    return f'Top songs: {top_songs}'
+    return f'<img src="{img_base64}" alt="Collage">'
 
 if __name__ == '__main__':
     webbrowser.open('http://localhost:8888/')
     app.run(port=8888)
+
+
+
+# things I want to ensure
+"""
+Depending on how many album covers we add, we need to make sure we have that many unique albums, or not depending on that users preference
+"""
