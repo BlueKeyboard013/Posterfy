@@ -1,7 +1,8 @@
 from os import access
 
+import flask
 import requests
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, session
 import webbrowser
 import Posterfy
 
@@ -12,6 +13,7 @@ app = Flask(__name__)
 CLIENT_ID = 'a2b8b16af30f4e1f9bf9b5a86ee8862b'
 CLIENT_SECRET = '877d125158854158b128e63d13a7cfdb'
 REDIRECT_URI = 'http://localhost:8888/callback'
+app.secret_key = 'my_secret_key'
 
 # Step 1: Get the authorization URL
 @app.route('/')
@@ -37,32 +39,35 @@ def callback():
 
     token_info = response.json()
     access_token = token_info['access_token']
+    session['access_token'] = access_token
 
-    print(token_info)
+    return flask.render_template("home.html")
 
-    # Now you can use the access token to make API calls
-
+@app.route('/poster')
+def poster():
+    access_token = session.get('access_token')
     top_songs = requests.get(
         'https://api.spotify.com/v1/me/top/tracks?limit=50',
         headers={'Authorization': f'Bearer {access_token}'}
     ).json()
 
+    # getting music collage
+    song_images = get_song_images(top_songs)
+    img_base64 = Posterfy.create_square_collage(song_images)
 
-    # print(top_songs['items'][1]['album']['images'])
-    # print(len(top_songs['items']))
+    return flask.render_template(
+        "poster.html",
+        img_base64=img_base64
+    )
 
+def get_song_images(top_songs):
     song_images = []
 
     for song in range(len(top_songs['items'])):
         curr_song = top_songs['items'][song]
         song_images.append(curr_song['album']['images'][0]['url'])
 
-    for url in song_images:
-        print(url)
-
-    img_base64 = Posterfy.create_square_collage(song_images)
-
-    return f'<img src="{img_base64}" alt="Collage">'
+    return song_images
 
 if __name__ == '__main__':
     webbrowser.open('http://localhost:8888/')
