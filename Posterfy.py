@@ -4,12 +4,13 @@ import os
 import requests
 import base64
 import ColorPosterfy
+import test
 
 
 def create_square_collage(image_urls, art_alb_tra):
     # Load images
     sorted_urls = get_sorted_images(image_urls, art_alb_tra)
-
+    print(image_urls)
     images = []
     for k, v in sorted_urls.items():
         response = requests.get(v[3])
@@ -17,7 +18,6 @@ def create_square_collage(image_urls, art_alb_tra):
         images.append(img)
    # Find the smallest dimension (width or height) across all images to preserve aspect ratio
     min_dimension = min(min(img.size) for img in images)
-    print(images)
     # Resize images based on the smallest dimension while maintaining the aspect ratio
     resized_images = [img.resize((min_dimension, min_dimension), Image.LANCZOS) for img in images]
 
@@ -59,8 +59,8 @@ def get_sorted_images(song_list, sort_order):
         return sort_by_album(song_list)
     elif sort_order == 'track':
         return sort_by_track(song_list)
-    # elif sort_order == 'color':
-    #     return sort_by_color(song_list)
+    elif sort_order == 'color':
+        return sort_by_color(song_list)
 
 def sort_by_album(song_list):
     # sort alphabetically
@@ -78,7 +78,8 @@ def sort_by_track(song_list):
 def sort_by_artist(song_list):
     return dict(sorted(song_list.items(), key=lambda item: item[1][1]))
 
-# def sort_by_color(song_list):
+def sort_by_color(song_list):
+    return dict(sorted(test.song_dict4.items(), key=lambda item: item[1][4]))
 
 #
 # def randomize_order(song_list):

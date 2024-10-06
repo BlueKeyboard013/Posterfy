@@ -4,6 +4,7 @@ from colorthief import ColorThief
 from PIL import Image
 from io import BytesIO
 import shutil
+import test
 
 
 def get_dominant_color_from_url(url):
@@ -35,3 +36,12 @@ def classify_color(rgb):
     else:
         return "Other"
 
+# colors = []
+# for k, v in test.song_dict2.items():
+#     test.song_dict2[k].append(get_dominant_color_from_url(v[3]))
+
+songs = dict(sorted(test.song_dict4.items(), key=lambda item: item[1][4]))
+# sort from red, to green, to blue
+
+for k, v in songs.items():
+    print(v[4])
