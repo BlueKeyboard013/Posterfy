@@ -4,6 +4,7 @@ from colorthief import ColorThief
 from PIL import Image
 from io import BytesIO
 import shutil
+from colorsys import rgb_to_hsv
 import test
 
 
@@ -25,23 +26,30 @@ def get_dominant_color_from_url(url):
     else:
         return None
 
-def classify_color(rgb):
-    r, g, b = rgb
+# sorting methods:
+
+# sorting by hue
+def rgb_to_hsv_color(color):
+    r, g, b = [x / 255.0 for x in color]  # Convert to [0, 1] range
+    return rgb_to_hsv(r, g, b)  # Returns (hue, saturation, value) (this is a colorsys method)
+
+# sorting by dominant channel:
+def dominant_channel(color):
+    r, g, b = color
+    return max(r, g, b)
+
+def custom_sort(color):
+    r, g, b = color
     if r > g and r > b:
-        return "Red"
+        return (0, r)  # Red comes first, then sorted by red intensity
     elif g > r and g > b:
-        return "Green"
-    elif b > r and b > g:
-        return "Blue"
+        return (1, g)  # Green comes second, then sorted by green intensity
     else:
-        return "Other"
+        return (2, b)  # Blue comes last, then sorted by blue intensity
 
-# colors = []
-# for k, v in test.song_dict2.items():
-#     test.song_dict2[k].append(get_dominant_color_from_url(v[3]))
+def get_sorted_colors(song_dict):
+    for k, v in song_dict.items():
+        rgb_color = v[4]
+        song_dict[k][4] = custom_sort(rgb_color)
 
-songs = dict(sorted(test.song_dict4.items(), key=lambda item: item[1][4]))
-# sort from red, to green, to blue
-
-for k, v in songs.items():
-    print(v[4])
+    return dict(sorted(song_dict.items(), key=lambda item: item[1][4]))

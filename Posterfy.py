@@ -10,9 +10,9 @@ import test
 def create_square_collage(image_urls, art_alb_tra):
     # Load images
     sorted_urls = get_sorted_images(image_urls, art_alb_tra)
-    print(image_urls)
     images = []
     for k, v in sorted_urls.items():
+        print(v)
         response = requests.get(v[3])
         img = Image.open(BytesIO(response.content))
         images.append(img)
@@ -40,7 +40,7 @@ def create_square_collage(image_urls, art_alb_tra):
         if should_break:
             break
 
-    # collage.save('collage.jpg')
+    collage.save('collage.jpg')
     return convert_to_base64(collage)
 
 
@@ -79,8 +79,10 @@ def sort_by_artist(song_list):
     return dict(sorted(song_list.items(), key=lambda item: item[1][1]))
 
 def sort_by_color(song_list):
-    return dict(sorted(test.song_dict4.items(), key=lambda item: item[1][4]))
+    return ColorPosterfy.get_sorted_colors(song_list)
 
+
+create_square_collage(test.song_dict4, 'color')
 #
 # def randomize_order(song_list):
 #     # randomize the order
