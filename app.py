@@ -46,7 +46,7 @@ def callback():
 @app.route('/poster', methods=["POST", "GET"])
 def poster():
     access_token = session.get('access_token')
-    artist_album = flask.request.form['art_alb_tra'].lower() # for now we can say that the user is always inputting artist or album.
+    artist_album = flask.request.form['sort_order'].lower() # for now we can say that the user is always inputting artist or album.
     top_songs = requests.get(
         'https://api.spotify.com/v1/me/top/tracks?limit=50',
         headers={'Authorization': f'Bearer {access_token}'}

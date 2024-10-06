@@ -3,8 +3,7 @@ from io import BytesIO
 import os
 import requests
 import base64
-import test
-from google.cloud import vision
+import ColorPosterfy
 
 
 def create_square_collage(image_urls, art_alb_tra):
@@ -18,7 +17,7 @@ def create_square_collage(image_urls, art_alb_tra):
         images.append(img)
    # Find the smallest dimension (width or height) across all images to preserve aspect ratio
     min_dimension = min(min(img.size) for img in images)
-    
+    print(images)
     # Resize images based on the smallest dimension while maintaining the aspect ratio
     resized_images = [img.resize((min_dimension, min_dimension), Image.LANCZOS) for img in images]
 
@@ -41,7 +40,7 @@ def create_square_collage(image_urls, art_alb_tra):
         if should_break:
             break
 
-    collage.save('collage.jpg')
+    # collage.save('collage.jpg')
     return convert_to_base64(collage)
 
 
@@ -53,13 +52,15 @@ def convert_to_base64(collage):
 
 # will have methods to sort them however the person wants to
 
-def get_sorted_images(song_list, art_alb_tra):
-    if art_alb_tra == 'artist':
+def get_sorted_images(song_list, sort_order):
+    if sort_order == 'artist':
         return sort_by_artist(song_list)
-    elif art_alb_tra == 'album':
+    elif sort_order == 'album':
         return sort_by_album(song_list)
-    elif art_alb_tra == 'track':
+    elif sort_order == 'track':
         return sort_by_track(song_list)
+    # elif sort_order == 'color':
+    #     return sort_by_color(song_list)
 
 def sort_by_album(song_list):
     # sort alphabetically
@@ -78,7 +79,7 @@ def sort_by_artist(song_list):
     return dict(sorted(song_list.items(), key=lambda item: item[1][1]))
 
 # def sort_by_color(song_list):
-#     # group by color
+
 #
 # def randomize_order(song_list):
 #     # randomize the order
