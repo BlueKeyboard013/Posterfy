@@ -12,8 +12,8 @@ def create_square_collage(image_urls, art_alb_tra):
     sorted_urls = get_sorted_images(image_urls, art_alb_tra)
     images = []
     for k, v in sorted_urls.items():
-        print(v)
         response = requests.get(v[3])
+        print([v[4], v[1]])
         img = Image.open(BytesIO(response.content))
         images.append(img)
    # Find the smallest dimension (width or height) across all images to preserve aspect ratio
